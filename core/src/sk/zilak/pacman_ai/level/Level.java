@@ -7,7 +7,8 @@ public class Level {
 
     private int width;
     private int height;
-    private List<LevelTileType> levelTiles = new ArrayList<>();
+    private List<LevelTile> levelTiles = new ArrayList<>(); // todo: implement this
+    private LevelGraph levelGraph;
 
     public int getWidth() {
         return width;
@@ -25,20 +26,29 @@ public class Level {
         this.height = height;
     }
 
-    public List<LevelTileType> getLevelTiles() {
+    public List<LevelTile> getLevelTiles() {
         return levelTiles;
     }
 
-    public void setLevelTiles(List<LevelTileType> levelTiles) {
+    public void setLevelTiles(List<LevelTile> levelTiles) {
         this.levelTiles = levelTiles;
     }
 
-    public LevelTileType getTileAt(int x, int y) {
+    public LevelGraph getLevelGraph() {
+        return levelGraph;
+    }
+
+    public void setLevelGraph(LevelGraph levelGraph) {
+        this.levelGraph = levelGraph;
+    }
+
+    public LevelTile getTileAt(int x, int y) {
         return levelTiles.get(indexFromCoordinates(x, y));
     }
 
+    // todo: this needs fixing
     public void setTileAt(int x, int y, LevelTileType tileType) {
-        levelTiles.set(indexFromCoordinates(x, y), tileType);
+        levelTiles.set(indexFromCoordinates(x, y), new LevelTile());
     }
 
     public void setTileAt(int x, int y, char tileType) {
