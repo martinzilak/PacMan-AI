@@ -1,28 +1,34 @@
 package sk.zilak.pacman_ai;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import sk.zilak.pacman_ai.screen.PlayScreen;
 
-public class PacMan extends ApplicationAdapter {
-    private SpriteBatch batch;
+public class PacMan extends Game {
+
+    public static final int WINDOW_WIDTH = 700;
+    public static final int WINDOW_HEIGHT = 800;
+    public static final int GAME_WIDTH = 608;
+    public static final int GAME_HEIGHT = 704;
+    public static final int TILE_WIDTH = 32;
+    public static final int TILE_HEIGHT = 32;
+
+    public SpriteBatch batch;
     private Texture img;
 
     @Override
     public void create () {
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        setScreen(new PlayScreen(this));
     }
 
     @Override
     public void render () {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(img, 0, 0);
-        batch.end();
+        super.render();
     }
 
     @Override
