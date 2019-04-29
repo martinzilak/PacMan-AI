@@ -5,6 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import sk.zilak.pacman_ai.PacMan;
@@ -19,11 +22,21 @@ public class PlayScreen implements Screen {
     private Viewport viewport;
     private Hud hud;
 
+    private TmxMapLoader mapLoader;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer mapRenderer;
+
     public PlayScreen(PacMan game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WINDOW_WIDTH, WINDOW_HEIGHT, camera);
         hud = new Hud(game.batch);
+
+        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+
+        mapLoader = new TmxMapLoader();
+        map = mapLoader.load("levels/level-1.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
     }
 
     @Override
@@ -33,11 +46,26 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        update(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        mapRenderer.render();
+
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+    }
+
+    public void update(float delta) {
+        processInput(delta);
+
+        camera.update();
+        mapRenderer.setView(camera);
+    }
+
+    public void processInput(float delta) {
+
     }
 
     @Override
