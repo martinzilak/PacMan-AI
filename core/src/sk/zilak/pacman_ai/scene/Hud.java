@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import static sk.zilak.pacman_ai.PacMan.WINDOW_HEIGHT;
-import static sk.zilak.pacman_ai.PacMan.WINDOW_WIDTH;
+import static sk.zilak.pacman_ai.PacManGame.WINDOW_HEIGHT;
+import static sk.zilak.pacman_ai.PacManGame.WINDOW_WIDTH;
 
 public class Hud {
     public Stage stage;
