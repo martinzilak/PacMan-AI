@@ -2,10 +2,10 @@ package sk.zilak.pacman_ai.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import sk.zilak.pacman_ai.PacMan;
+import sk.zilak.pacman_ai.PacManGame;
 
-import static sk.zilak.pacman_ai.PacMan.WINDOW_HEIGHT;
-import static sk.zilak.pacman_ai.PacMan.WINDOW_WIDTH;
+import static sk.zilak.pacman_ai.PacManGame.WINDOW_HEIGHT;
+import static sk.zilak.pacman_ai.PacManGame.WINDOW_WIDTH;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -16,6 +16,6 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = WINDOW_WIDTH;
 		config.height = WINDOW_HEIGHT;
-		new LwjglApplication(new PacMan(), config);
+		new LwjglApplication(new PacManGame(), config);
 	}
 }

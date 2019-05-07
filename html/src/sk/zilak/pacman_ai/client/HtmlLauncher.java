@@ -3,7 +3,7 @@ package sk.zilak.pacman_ai.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import sk.zilak.pacman_ai.PacMan;
+import sk.zilak.pacman_ai.PacManGame;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -46,6 +46,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new PacMan();
+                return new PacManGame();
         }
 }
