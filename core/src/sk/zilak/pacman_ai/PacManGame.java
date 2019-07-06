@@ -19,7 +19,7 @@ public class PacManGame extends Game {
     public static final float PIXELS_PER_METER = 100;
 
     public SpriteBatch batch;
-    private Texture img;
+//    private Texture img;
 
     @Override
     public void create () {
@@ -35,6 +35,6 @@ public class PacManGame extends Game {
     @Override
     public void dispose () {
         batch.dispose();
-        img.dispose();
+//        img.dispose();
     }
 }
