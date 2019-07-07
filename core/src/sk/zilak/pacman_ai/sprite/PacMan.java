@@ -9,12 +9,16 @@ import com.badlogic.gdx.utils.Array;
 import sk.zilak.pacman_ai.screen.PlayScreen;
 
 import static sk.zilak.pacman_ai.PacManGame.*;
-import static sk.zilak.pacman_ai.sprite.PacMan.AnimationState.*;
+import static sk.zilak.pacman_ai.sprite.PacMan.AnimationState.MOVING;
+import static sk.zilak.pacman_ai.sprite.PacMan.AnimationState.STANDING;
 import static sk.zilak.pacman_ai.utilities.Utilities.getTextureRegion;
 
 public class PacMan extends Sprite {
 
     public static final int PLAYER_SIZE = 13;
+    public static final float SPEED_STEP = 0.1f;
+    public static final float MAX_SPEED = 1.5f;
+    public static final String USER_DATA_NAME = "pacman-collision";
 
     public enum AnimationState { STANDING, MOVING };
     public AnimationState currentState;
@@ -41,7 +45,9 @@ public class PacMan extends Sprite {
 
         Array<TextureRegion> movementFrames = Array.with(
             getTextureRegion(getTexture(), 1, 0),
-            getTextureRegion(getTexture(), 0, 0)
+            getTextureRegion(getTexture(), 0, 0),
+            getTextureRegion(getTexture(), 1, 0),
+            getTextureRegion(getTexture(), 2, 0)
         );
 
         pacmanMoving = new Animation(0.1f, movementFrames);
@@ -62,14 +68,23 @@ public class PacMan extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(PLAYER_SIZE / PIXELS_PER_METER);
 
-        fixtureDef.shape = shape;
+        fixtureDef.filter.categoryBits = PACMAN_BIT;
+        fixtureDef.filter.maskBits = DEFAULT_BIT | BALL_BIT | POWERUP_BIT | GHOST_BIT;
 
+        fixtureDef.shape = shape;
         body.createFixture(fixtureDef);
+
+        CircleShape centerPoint = new CircleShape();
+        centerPoint.setRadius(0.1f);
+        fixtureDef.shape = centerPoint;
+        fixtureDef.isSensor = true;
+        body.createFixture(fixtureDef).setUserData(USER_DATA_NAME);
     }
 
     public void update(float delta){
         setRegion(getAnimationFrame(delta));
-        setAnimationRotation();
+        setOriginCenter();
+        setRotation(getAnimationRotation());
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
@@ -97,42 +112,33 @@ public class PacMan extends Sprite {
     }
 
     public AnimationState getAnimationState() {
-        if(body.getLinearVelocity().y > 0) {
-            movementDirection = MovementDirection.UP;
-            return MOVING;
-        }
-        else if(body.getLinearVelocity().y < 0) {
-            movementDirection = MovementDirection.DOWN;
-            return MOVING;
-        }
-        else if(body.getLinearVelocity().x < 0) {
-            movementDirection = MovementDirection.LEFT;
-            return MOVING;
-        }
-        else if(body.getLinearVelocity().x > 0) {
-            movementDirection = MovementDirection.RIGHT;
-            return MOVING;
-        } else {
+        float velocityX = body.getLinearVelocity().x;
+        float velocityY = body.getLinearVelocity().y;
+
+        if(velocityX == 0 && velocityY == 0) {
             return STANDING;
         }
+
+        if(Math.abs(velocityX) > Math.abs(velocityY)) {
+            movementDirection = velocityX > 0 ? MovementDirection.RIGHT : MovementDirection.LEFT;
+        } else {
+            movementDirection = velocityY > 0 ? MovementDirection.UP : MovementDirection.DOWN;
+        }
+
+        return MOVING;
     }
 
-    //TODO: there has to be a better way...
-    public void setAnimationRotation() {
+    public float getAnimationRotation() {
         switch (movementDirection) {
             case UP:
-                rotate90(false);
-                break;
+                return 90;
             case DOWN:
-                rotate90(true);
-                break;
+                return 270;
             case LEFT:
-                rotate90(true);
-                rotate90(true);
-                break;
+                return 180;
             case RIGHT:
             default:
-                break;
+                return 0;
         }
     }
 }

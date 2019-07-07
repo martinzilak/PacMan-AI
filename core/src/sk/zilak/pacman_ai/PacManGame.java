@@ -1,10 +1,6 @@
 package sk.zilak.pacman_ai;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import sk.zilak.pacman_ai.screen.PlayScreen;
 
@@ -17,6 +13,13 @@ public class PacManGame extends Game {
     public static final int TILE_WIDTH = 32;
     public static final int TILE_HEIGHT = 32;
     public static final float PIXELS_PER_METER = 100;
+
+    public static final short DEFAULT_BIT = 1;
+    public static final short PACMAN_BIT = 2;
+    public static final short BALL_BIT = 4;
+    public static final short POWERUP_BIT = 8;
+    public static final short EATEN_BIT = 16;
+    public static final short GHOST_BIT = 32;
 
     public SpriteBatch batch;
 //    private Texture img;

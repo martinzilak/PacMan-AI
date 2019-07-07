@@ -6,28 +6,25 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import sk.zilak.pacman_ai.PacManGame;
 import sk.zilak.pacman_ai.scene.Hud;
-import sk.zilak.pacman_ai.sprite.InteractiveTileObject;
 import sk.zilak.pacman_ai.sprite.PacMan;
 import sk.zilak.pacman_ai.utilities.B2WorldCreator;
-
-import java.util.Arrays;
-import java.util.List;
+import sk.zilak.pacman_ai.utilities.WorldContactListener;
 
 import static sk.zilak.pacman_ai.PacManGame.*;
+import static sk.zilak.pacman_ai.sprite.PacMan.MAX_SPEED;
+import static sk.zilak.pacman_ai.sprite.PacMan.SPEED_STEP;
 import static sk.zilak.pacman_ai.utilities.B2WorldCreator.PLAYER_SPAWN_INDEX;
 
 public class PlayScreen implements Screen {
@@ -67,8 +64,11 @@ public class PlayScreen implements Screen {
 
         Rectangle playerSpawn = map.getLayers().get(PLAYER_SPAWN_INDEX).getObjects().getByType(RectangleMapObject.class).get(0).getRectangle();
         player = new PacMan(world, this, playerSpawn);
+        player.body.setFixedRotation(true);
 
         new B2WorldCreator(world, map);
+
+        world.setContactListener(new WorldContactListener());
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -102,6 +102,7 @@ public class PlayScreen implements Screen {
 
     public void update(float delta) {
         processInput(delta);
+        limitVelocity();
 
         world.step(1/60f, 6, 2);
 
@@ -113,19 +114,39 @@ public class PlayScreen implements Screen {
 
     public void processInput(float delta) {
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.body.applyLinearImpulse(new Vector2(0, 0.1f), player.body.getWorldCenter(), true);
+            player.body.applyLinearImpulse(new Vector2(0, SPEED_STEP), player.body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.body.applyLinearImpulse(new Vector2(0, -0.1f), player.body.getWorldCenter(), true);
+            player.body.applyLinearImpulse(new Vector2(0, -SPEED_STEP), player.body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.body.applyLinearImpulse(new Vector2(-0.1f, 0), player.body.getWorldCenter(), true);
+            player.body.applyLinearImpulse(new Vector2(-SPEED_STEP, 0), player.body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.body.applyLinearImpulse(new Vector2(0.1f, 0), player.body.getWorldCenter(), true);
+            player.body.applyLinearImpulse(new Vector2(SPEED_STEP, 0), player.body.getWorldCenter(), true);
         }
+
+        if(!(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.S))) {
+            player.body.setLinearVelocity(player.body.getLinearVelocity().x, 0);
+        }
+        if(!(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D))) {
+            player.body.setLinearVelocity(0, player.body.getLinearVelocity().y);
+        }
+
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
+        }
+    }
+
+    public void limitVelocity() {
+        Vector2 velocity = player.body.getLinearVelocity();
+        float velocityX = velocity.x;
+        float velocityY = velocity.y;
+
+        if(Math.abs(velocityX) > Math.abs(velocityY)) {
+            player.body.setLinearVelocity(Math.min(Math.abs(velocityX), MAX_SPEED) * Math.signum(velocityX), 0);
+        } else {
+            player.body.setLinearVelocity(0, Math.min(Math.abs(velocityY), MAX_SPEED) * Math.signum(velocityY));
         }
     }
 
