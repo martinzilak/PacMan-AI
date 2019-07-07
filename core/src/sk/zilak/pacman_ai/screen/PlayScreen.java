@@ -104,7 +104,7 @@ public class PlayScreen implements Screen {
         processInput(delta);
         limitVelocity();
 
-        world.step(1/60f, 6, 2);
+        world.step(1/FPS, 6, 2);
 
         player.update(delta);
 

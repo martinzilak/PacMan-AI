@@ -6,6 +6,8 @@ import sk.zilak.pacman_ai.screen.PlayScreen;
 
 public class PacManGame extends Game {
 
+    public static final float FPS = 60;
+
     public static final int WINDOW_WIDTH = 608;
     public static final int WINDOW_HEIGHT = 775;
     public static final int GAME_WIDTH = 608;
