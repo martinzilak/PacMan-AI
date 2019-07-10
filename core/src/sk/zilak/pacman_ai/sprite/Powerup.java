@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import sk.zilak.pacman_ai.scene.Hud;
 
 import static sk.zilak.pacman_ai.PacManGame.EATEN_BIT;
 import static sk.zilak.pacman_ai.PacManGame.POWERUP_BIT;
@@ -12,6 +13,7 @@ import static sk.zilak.pacman_ai.PacManGame.POWERUP_BIT;
 public class Powerup extends InteractiveTileObject {
 
     private static final int LAYER_INDEX = 3;
+    public static final int POWERUP_SCORE = 1000;
 
     public Powerup(World world, TiledMap map, Rectangle tileBounds) {
         super(world, map, tileBounds, BodyDef.BodyType.KinematicBody);
@@ -26,6 +28,7 @@ public class Powerup extends InteractiveTileObject {
         if(cell != null) {
             getCell().setTile(null);
         }
+        Hud.addScore(1000);
     }
 
     @Override

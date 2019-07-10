@@ -18,7 +18,12 @@ public class Hud implements Disposable {
     public Stage stage;
 
     public static final int STARTING_SCORE = 0;
-    public static final int STARTING_LIFE = 3;
+    public static final int STARTING_LIVES = 3;
+
+    private static int score = STARTING_SCORE;
+    private static int lives = STARTING_LIVES;
+    private static Label lifeValueLabel;
+    private static Label scoreValueLabel;
 
     public Hud(SpriteBatch spriteBatch) {
         Viewport viewport = new FitViewport(WINDOW_WIDTH, WINDOW_HEIGHT, new OrthographicCamera());
@@ -30,8 +35,8 @@ public class Hud implements Disposable {
 
         Label lifeTextLabel = generateHudLabel("LIVES");
         Label scoreTextLabel = generateHudLabel("SCORE");
-        Label lifeValueLabel = generateHudLabel(String.format("%01d", STARTING_LIFE));
-        Label scoreValueLabel = generateHudLabel(String.format("%06d", STARTING_SCORE));
+        scoreValueLabel = generateHudLabel(String.format("%06d", score));
+        lifeValueLabel = generateHudLabel(String.format("%01d", lives));
 
         table.add(lifeTextLabel).expandX().padTop(10);
         table.add(scoreTextLabel).expandX().padTop(10);
@@ -42,12 +47,30 @@ public class Hud implements Disposable {
         stage.addActor(table);
     }
 
+    public static void addScore(int score) {
+        Hud.score += score;
+        updateScoreValueLabel(Hud.score);
+    }
+
+    public static void loseLife() {
+        lives--;
+        updateLifeValueLabel(lives);
+    }
+
     @Override
     public void dispose() {
         stage.dispose();
     }
 
-    private Label generateHudLabel(String text) {
-        return new Label(text, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+    private static Label generateHudLabel(String formattedText) {
+        return new Label(formattedText, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+    }
+
+    private static void updateScoreValueLabel(int score) {
+        scoreValueLabel.setText(String.format("%06d", score));
+    }
+
+    private static void updateLifeValueLabel(int lives) {
+        lifeValueLabel.setText(String.format("%01d", lives));
     }
 }

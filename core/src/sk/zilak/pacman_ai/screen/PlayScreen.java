@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import sk.zilak.pacman_ai.PacManGame;
 import sk.zilak.pacman_ai.scene.Hud;
+import sk.zilak.pacman_ai.sprite.Ball;
 import sk.zilak.pacman_ai.sprite.PacMan;
 import sk.zilak.pacman_ai.utilities.B2WorldCreator;
 import sk.zilak.pacman_ai.utilities.WorldContactListener;
@@ -89,7 +90,7 @@ public class PlayScreen implements Screen {
 
         mapRenderer.render();
 
-        b2dr.render(world, camera.combined);
+//        b2dr.render(world, camera.combined);
 
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
@@ -107,6 +108,8 @@ public class PlayScreen implements Screen {
         world.step(1/FPS, 6, 2);
 
         player.update(delta);
+
+        checkWinCondition();
 
         camera.update();
         mapRenderer.setView(camera);
@@ -147,6 +150,12 @@ public class PlayScreen implements Screen {
             player.body.setLinearVelocity(Math.min(Math.abs(velocityX), MAX_SPEED) * Math.signum(velocityX), 0);
         } else {
             player.body.setLinearVelocity(0, Math.min(Math.abs(velocityY), MAX_SPEED) * Math.signum(velocityY));
+        }
+    }
+
+    private void checkWinCondition() {
+        if(Ball.getBallCount(this.world) <= 0) {
+            this.game.pause();
         }
     }
 
